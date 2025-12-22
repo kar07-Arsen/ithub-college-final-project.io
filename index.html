@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Mastery | Менторство Pro уровня</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- 1. CONFIG & VARIABLES --- */
+        :root {
+            --bg-main: #050505;
+            --bg-secondary: #0a0a0a;
+            --primary: #00f2ea; /* Cyan Neon */
+            --accent: #ff0050;  /* Red Neon */
+            --purple: #7000ff;
+            --text-main: #ffffff;
+            --text-muted: #a3a3a3;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --radius: 16px;
+            --font-main: 'Outfit', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- 2. GLOBAL UTILITIES --- */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #fff 30%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 14px 32px;
+            background: var(--text-main);
+            color: var(--bg-main);
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text-main);
+        }
+        .btn-outline:hover { background: rgba(255,255,255,0.1); }
+
+        section {
+            min-height: 100vh;
+            padding: 100px 0;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Анимация появления при скролле */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* Фоновые пятна (Glow effects) */
+        .glow-bg {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(112,0,255,0.15) 0%, transparent 70%);
+            filter: blur(80px);
+            z-index: -1;
+            top: 20%;
+            left: -10%;
+        }
+
+        /* --- 3. NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 0;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 800; letter-spacing: -1px; }
+        .logo span { color: var(--primary); }
+
+        .nav-links { display: flex; gap: 40px; }
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+        .nav-links a:hover { color: var(--primary); }
+
+        /* --- 4. HERO SECTION --- */
+        #hero {
+            padding-top: 150px;
+            align-items: flex-start;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 4.5rem;
+            line-height: 1.05;
+            font-weight: 800;
+            margin-bottom: 25px;
+            letter-spacing: -2px;
+        }
+
+        .hero-desc {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            max-width: 90%;
+        }
+
+        .code-block {
+            background: #0f0f12;
+            padding: 25px;
+            border-radius: var(--radius);
+            font-family: var(--font-code);
+            font-size: 0.9rem;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        
+        .code-line { display: block; margin-bottom: 5px; }
+        .c-purple { color: #c678dd; }
+        .c-blue { color: #61afef; }
+        .c-green { color: #98c379; }
+        .c-yellow { color: #e5c07b; }
+
+        /* --- 5. STACK & SKILLS --- */
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-header h2 { font-size: 3rem; margin-bottom: 15px; }
+        .section-header p { color: var(--text-muted); }
+
+        .stack-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .tech-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 30px;
+            border-radius: var(--radius);
+            transition: 0.3s;
+            cursor: default;
+        }
+
+        .tech-card:hover {
+            border-color: var(--primary);
+            background: rgba(255,255,255,0.05);
+            transform: translateY(-5px);
+        }
+
+        .tech-icon {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .tech-card h3 { font-size: 1.2rem; margin-bottom: 10px; }
+        .tech-card ul { list-style: none; padding-left: 0; color: var(--text-muted); font-size: 0.9rem; }
+        .tech-card li::before { content: "• "; color: var(--primary); }
+
+        /* --- 6. CURRICULUM (ROADMAP) --- */
+        .roadmap-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .roadmap-line {
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--primary), var(--purple));
+        }
+
+        .step {
+            margin-left: 60px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .step::before {
+            content: '';
+            position: absolute;
+            left: -49px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            background: var(--bg-main);
+            border: 4px solid var(--primary);
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .step-card {
+            background: var(--bg-secondary);
+            padding: 25px;
+            border-radius: var(--radius);
+            border: 1px solid var(--glass-border);
+        }
+
+        .step-num { 
+            color: var(--primary); 
+            font-weight: 700; 
+            font-size: 0.8rem; 
+            text-transform: uppercase; 
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        /* --- 7. PRICING --- */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .price-card {
+            background: var(--glass);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .price-card.featured {
+            border: 1px solid var(--primary);
+            background: rgba(0, 242, 234, 0.03);
+        }
+
+        .price-card.featured::after {
+            content: 'POPULAR';
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: var(--primary);
+            color: #000;
+            padding: 5px 40px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            transform: rotate(45deg);
+        }
+
+        .price { font-size: 3rem; font-weight: 800; margin: 20px 0; }
+        .price span { font-size: 1rem; color: var(--text-muted); font-weight: 400; }
+        
+        .features-list { text-align: left; margin: 30px 0; list-style: none; }
+        .features-list li { margin-bottom: 12px; display: flex; align-items: center; color: var(--text-muted); }
+        .features-list li svg { width: 20px; margin-right: 10px; fill: var(--primary); }
+
+        /* --- 8. CONTACT / FOOTER --- */
+        footer {
+            background: #020202;
+            padding: 80px 0 30px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input, textarea {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border);
+            padding: 16px;
+            border-radius: 8px;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255,255,255,0.06);
+        }
+
+        .socials a { color: var(--text-main); font-size: 1.5rem; margin-right: 20px; transition: 0.3s; }
+        .socials a:hover { color: var(--primary); }
+
+        /* --- MOBILE --- */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.8rem; }
+            .hero-grid { grid-template-columns: 1fr; text-align: center; }
+            .code-block { display: none; }
+            .nav-links { display: none; }
+            .hero-desc { margin: 0 auto 30px; }
+            .footer-grid { grid-template-columns: 1fr; }
+            section { padding: 60px 0; }
+            .roadmap-line { left: 10px; }
+            .step { margin-left: 40px; }
+            .step::before { left: -39px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="container nav-content">
+            <div class="logo">Front<span>Mentor</span>_</div>
+            <div class="nav-links">
+                <a href="#stack">Технологии</a>
+                <a href="#roadmap">Программа</a>
+                <a href="#pricing">Тарифы</a>
+                <a href="#contact" style="color: var(--text-main); font-weight: 600;">Контакты</a>
+            </div>
+            <a href="#contact" class="btn" style="padding: 8px 20px; font-size: 0.9rem;">Записаться</a>
+        </div>
+    </nav>
+
+    <section id="hero">
+        <div class="glow-bg"></div>
+        <div class="container hero-grid">
+            <div class="hero-text reveal">
+                <div style="color: var(--primary); font-weight: 700; margin-bottom: 10px; letter-spacing: 1px;">MENTORSHIP PROGRAM 2024</div>
+                <h1>Frontend Разработка<br><span class="gradient-text">Без Границ</span></h1>
+                <p class="hero-desc">
+                    Индивидуальное обучение от Senior разработчика. Превращаю новичков и Junior-ов в уверенных Middle специалистов за 4 месяца. React, Vue, Angular, архитектура и реальные проекты.
+                </p>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: flex-start;">
+                    <a href="#pricing" class="btn">Начать обучение</a>
+                    <a href="#stack" class="btn btn-outline">Изучить стек</a>
+                </div>
+            </div>
+            <div class="code-block reveal" style="transition-delay: 0.2s;">
+                <span class="code-line c-purple">const</span> <span class="c-blue">student</span> = {
+                <span class="code-line">&nbsp;&nbsp;level: <span class="c-green">'Junior'</span>,</span>
+                <span class="code-line">&nbsp;&nbsp;goal: <span class="c-green">'Middle+'</span>,</span>
+                <span class="code-line">&nbsp;&nbsp;stack: [<span class="c-green">'React'</span>, <span class="c-green">'Vue'</span>, <span class="c-green">'TS'</span>]</span>
+                <span class="code-line">};</span>
+                <br>
+                <span class="code-line c-purple">async function</span> <span class="c-yellow">levelUp</span>() {
+                <span class="code-line">&nbsp;&nbsp;<span class="c-purple">await</span> mentor.<span class="c-blue">teach</span>(architecture);</span>
+                <span class="code-line">&nbsp;&nbsp;<span class="c-purple">return</span> <span class="c-green">'Offer Received 🚀'</span>;</span>
+                <span class="code-line">}</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="stack">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Твой Технический <span class="gradient-text">Стек</span></h2>
+                <p>Мы не просто учим синтаксис. Мы учим экосистему и паттерны.</p>
+            </div>
+            <div class="stack-grid">
+                <div class="tech-card reveal">
+                    <div class="tech-icon">⚛️</div>
+                    <h3>React Ecosystem</h3>
+                    <ul>
+                        <li>Next.js & SSR</li>
+                        <li>Redux Toolkit / Zustand</li>
+                        <li>Optimization & Profiler</li>
+                        <li>Jest & React Testing Library</li>
+                    </ul>
+                </div>
+                <div class="tech-card reveal" style="transition-delay: 0.1s;">
+                    <div class="tech-icon">🖖</div>
+                    <h3>Vue & Nuxt</h3>
+                    <ul>
+                        <li>Vue 3 Composition API</li>
+                        <li>Pinia State Management</li>
+                        <li>Nuxt.js Modules</li>
+                        <li>VueUse Library</li>
+                    </ul>
+                </div>
+                <div class="tech-card reveal" style="transition-delay: 0.2s;">
+                    <div class="tech-icon">🅰️</div>
+                    <h3>Angular Deep Dive</h3>
+                    <ul>
+                        <li>RxJS & Reactive Programming</li>
+                        <li>Dependency Injection</li>
+                        <li>NgRx Store</li>
+                        <li>Signals (New Feature)</li>
+                    </ul>
+                </div>
+                <div class="tech-card reveal" style="transition-delay: 0.3s;">
+                    <div class="tech-icon">🛠</div>
+                    <h3>Engineering Core</h3>
+                    <ul>
+                        <li>TypeScript Generics</li>
+                        <li>Docker & CI/CD Basics</li>
+                        <li>Webpack / Vite Config</li>
+                        <li>WebSockets & REST API</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="roadmap" style="background: var(--bg-secondary);">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>План <span style="color: var(--purple)">Обучения</span></h2>
+                <p>От теории к офферу за 4 этапа.</p>
+            </div>
+            
+            <div class="roadmap-container">
+                <div class="roadmap-line"></div>
+                
+                <div class="step reveal">
+                    <div class="step-card">
+                        <span class="step-num">Этап 01 • Месяц 1</span>
+                        <h3>Advanced JavaScript & Верстка</h3>
+                        <p style="color: var(--text-muted); margin-top: 10px;">
+                            Закрываем пробелы. Event Loop, Promise chain, сложные анимации, семантика и доступность (a11y). Пишем свой мини-фреймворк.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="step reveal">
+                    <div class="step-card">
+                        <span class="step-num">Этап 02 • Месяц 2</span>
+                        <h3>Погружение во Фреймворк (React/Vue/Angular)</h3>
+                        <p style="color: var(--text-muted); margin-top: 10px;">
+                            Выбираем основной инструмент. Создаем SPA с роутингом, авторизацией (JWT) и сложными формами. Внедряем TypeScript.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="step reveal">
+                    <div class="step-card">
+                        <span class="step-num">Этап 03 • Месяц 3</span>
+                        <h3>Архитектура и Real-world tasks</h3>
+                        <p style="color: var(--text-muted); margin-top: 10px;">
+                            FSD (Feature Sliced Design), State Management, оптимизация бандла. Настройка CI/CD pipeline, линтеров и Husky.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="step reveal">
+                    <div class="step-card">
+                        <span class="step-num">Этап 04 • Финал</span>
+                        <h3>Карьера и Собеседования</h3>
+                        <p style="color: var(--text-muted); margin-top: 10px;">
+                            Mock interview (алгоритмы + теория). Составление резюме, разбор тестовых заданий и стратегия поиска работы в Европе и РФ.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Выбери свой <span style="color: var(--accent)">формат</span></h2>
+            </div>
+            <div class="pricing-grid">
+                <div class="price-card reveal">
+                    <h3>Консультация</h3>
+                    <div class="price">5k <span>₽/час</span></div>
+                    <p style="color: var(--text-muted)">Разовый разбор конкретной проблемы или мок-интервью.</p>
+                    <ul class="features-list">
+                        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Code Review проекта</li>
+                        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Карьерный план</li>
+                        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Запись встречи</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-outline" style="width: 100%; justify-content: center;">Забронировать</a>
+                </div>
+
+                <div class="price-card featured reveal" style="transition-delay: 0.1s;">
+                    <h3>Менторство</h3>
+                    <div class="price">30k <span>₽/мес</span></div>
+                    <p style="color: var(--text-muted)">Полное сопровождение до трудоустройства.</p>
+                    <ul class="features-list">
+                        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Личный план развития</li>
+                        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Еженедельные созвоны (1-2 часа)</li>
+                        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Чат поддержки 24/7</li>
+                        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Безлимитное Code Review</li>
+                    </ul>
+                    <a href="#contact" class="btn" style="width: 100%; justify-content: center; background: var(--primary); color: #000;">Выбрать Менторство</a>
+                </div>
+
+                <div class="price-card reveal" style="transition-delay: 0.2s;">
+                    <h3>Project Review</h3>
+                    <div class="price">10k <span>₽/проект</span></div>
+                    <p style="color: var(--text-muted)">Аудит вашего пет-проекта или тестового задания.</p>
+                    <ul class="features-list">
+                        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Подробный отчет (PDF)</li>
+                        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Список багов и улучшений</li>
+                        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Рефакторинг кода</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-outline" style="width: 100%; justify-content: center;">Заказать аудит</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2>Готов <span class="gradient-text">Прокачаться?</span></h2>
+                <p>Оставь заявку на бесплатное вводное интервью (15 мин).</p>
+            </div>
+            
+            <div class="footer-grid">
+                <div class="contact-info">
+                    <h3 style="margin-bottom: 20px; font-size: 1.5rem;">Контакты</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 30px;">
+                        Если у тебя остались вопросы по программе, стеку или оплате — пиши мне напрямую в мессенджеры или заполни форму.
+                    </p>
+                    <div class="socials">
+                        <a href="#">Telegram</a>
+                        <a href="#">LinkedIn</a>
+                        <a href="#">GitHub</a>
+                    </div>
+                    <div style="margin-top: 40px; color: var(--text-muted); font-size: 0.9rem;">
+                        email@frontend-mentor.com<br>
+                        +7 (999) 000-00-00
+                    </div>
+                </div>
+
+                <form class="contact-form">
+                    <input type="text" placeholder="Ваше имя" required>
+                    <input type="email" placeholder="Email" required>
+                    <select style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); padding: 16px; border-radius: 8px; color: white;">
+                        <option value="" style="color: black;">Выбрать тариф</option>
+                        <option value="consultation" style="color: black;">Консультация</option>
+                        <option value="mentorship" style="color: black;">Менторство</option>
+                    </select>
+                    <textarea rows="4" placeholder="Ваша цель или вопрос..."></textarea>
+                    <button type="submit" class="btn" style="background: var(--primary); color: #000; border: none; cursor: pointer;">Отправить заявку</button>
+                </form>
+            </div>
+
+            <div style="text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; font-size: 0.8rem; color: var(--text-muted);">
+                &copy; 2025 Frontend Mentor. Designed for Developers.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Reveal Animations on Scroll
+        window.addEventListener('scroll', reveal);
+
+        function reveal() {
+            var reveals = document.querySelectorAll('.reveal');
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var revealTop = reveals[i].getBoundingClientRect().top;
+                var revealPoint = 150;
+
+                if (revealTop < windowHeight - revealPoint) {
+                    reveals[i].classList.add('active');
+                }
+            }
+        }
+        
+        // Trigger once on load
+        reveal();
+    </script>
+</body>
+</html>
